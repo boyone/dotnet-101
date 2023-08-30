@@ -584,6 +584,82 @@ dotnet run --environment Production
          Hosting environment: UAT
      ```
 
+4. Add Data `"Credential__Default": ""` to `*.json`
+
+   - `appsettings.json`
+
+     ```json
+     {
+       "Logging": {
+         "LogLevel": {
+           "Default": "Information",
+           "Microsoft.AspNetCore": "Warning"
+         }
+       },
+       "AllowedHosts": "*",
+       "Env": "Hello Prod",
+       "Credential": {
+        "Default": ""
+       }
+     }
+     ```
+
+   - `appsettings.Development.json`
+
+     ```json
+     {
+       "Logging": {
+         "LogLevel": {
+           "Default": "Information",
+           "Microsoft.AspNetCore": "Warning"
+         }
+       },
+       "Env": "Hello Dev",
+       "Credential": {
+        "Default": "Dev Credential"
+       }
+     }
+     ```
+
+   - `appsettings.UAT.json`
+
+     ```json
+     {
+       "Logging": {
+         "LogLevel": {
+           "Default": "Information",
+           "Microsoft.AspNetCore": "Warning"
+         }
+       },
+       "Env": "Hello UAT",
+       "Credential": {
+        "Default": "UAT Credential"
+       }
+     }
+     ```
+
+5. Add Following lines to `Program.cs`
+
+   - after `Console.WriteLine("Builder URL: " + builderUrl);`
+
+     ```cs
+     string builderUrl = builder.Configuration.GetValue<string>("ASPNETCORE_URLS");
+     Console.WriteLine("Builder URL: " + builderUrl);
+
+     string credential = builder.Configuration.GetValue<string>("Credential:Default");
+     Console.WriteLine("Credential: " + credential);
+     // End of Additional Code for builder
+
+
+     var app = builder.Build();
+     ```
+
+6. Run app and set `Credential` value with `Credential__Default`
+
+   ```sh
+   Credential__Default="Custom Credential" bin/Debug/net6.0/publish/api
+   ```
+
 ---
 
 ## References
